@@ -18,7 +18,7 @@ pdb_dir        = sys.argv[2]
 sim_id         = sys.argv[3]
 is_native      = True
 ff             = 'ff_2.1'
-T              = 0.8
+T              = sys.argv[8]
 
 thickness = 31.8
 duration       = sys.argv[4]
@@ -27,19 +27,24 @@ frame_interval = sys.argv[5]
 work_dir = "./"
 
 # Choose between tension and pulling simulations
-sim_type = sys.argv(6)
+sim_type = sys.argv[6]
 
 exchange = False  # if True, it will run the replica exchange simulation
 # if False, it will run the constant temperature simulation
 
 n_rep = 1  # replica number
 
-T_low = 0.86
-T_high = 0.86
+T_low = T
+T_high = T
 
 replica_interval = 10  # How long takes an exchange attempt (upside time unit)
 
-continue_sim = sys.argv(7)  
+continue_sim = sys.argv[7]
+
+randomseed       =  np.random.randint(0,100000)
+                         # Might want to change the fixed seed for the random number
+
+restraints = sys.argv[9]
 
 # ----------------------------------------------------------------------
 # Set the path and filename
@@ -137,14 +142,14 @@ if not continue_sim:
 # ----------------------------------------------------------------------
 
 if not continue_sim:
-    if sim_type == "pulling":
+    if sim_type == "velocity":
         kwargs = dict(
             ask_before_using_AFM="Velocity_Simulations.dat",
         )
     elif sim_type == "tension":
         kwargs = dict(tension="Tension_Simulations.dat")
     else:
-        print("sim_type must be either 'pulling' or 'tension'")
+        print("sim_type must be either 'velocity' or 'tension'")
         raise ValueError("sim_type must be either 'pulling' or 'tension'")
 
     config_stdout = ru.advanced_config(config_base, **kwargs)
@@ -163,8 +168,8 @@ upside_opts = (
     "--disable-recentering "
 )
 
-tempers = np.linspace(sqrt(T_low), sqrt(T_high), n_rep) ** 2
-tempers_str = ",".join(str(t) for t in tempers)
+# tempers = np.linspace(sqrt(T_low), sqrt(T_high), n_rep) ** 2
+# tempers_str = ",".join(str(t) for t in tempers)
 
 if exchange:
     swap_sets = ru.swap_table2d(
