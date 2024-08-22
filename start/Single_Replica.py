@@ -20,7 +20,7 @@ pdb_dir        = sys.argv[2]
 sim_id         = sys.argv[3]
 is_native      = True
 ff             = 'ff_2.1'
-T              = 0.8
+T              = sys.argv[7]
 duration       = sys.argv[4]
 frame_interval = sys.argv[5]
 base_dir       = './'
@@ -34,7 +34,7 @@ continue_sim     = sys.argv[6]  # when you run a new simulation, set it as "Fals
 randomseed       =  np.random.randint(0,100000)
                          # Might want to change the fixed seed for the random number
 
-#restraints = ""
+restraints = sys.argv[8]
 
 #----------------------------------------------------------------------
 ## Initialization
