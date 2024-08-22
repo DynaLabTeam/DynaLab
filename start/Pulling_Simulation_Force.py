@@ -18,8 +18,8 @@ upside_to_pN   = 41.4
 
 AFM_table  = sys.argv[1]
 
-pdb_id     = '1qhj'
-sim_id     = 'pulling_test'
+pdb_id     = sys.argv[2]
+sim_id     = sys.argv[3]
 n_rep      = 1
 work_dir   = './'
 
