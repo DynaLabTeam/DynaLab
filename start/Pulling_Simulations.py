@@ -168,9 +168,6 @@ upside_opts = (
     "--disable-recentering "
 )
 
-# tempers = np.linspace(sqrt(T_low), sqrt(T_high), n_rep) ** 2
-# tempers_str = ",".join(str(t) for t in tempers)
-
 if exchange:
     swap_sets = ru.swap_table2d(
         1, len(tempers)
@@ -179,14 +176,14 @@ if exchange:
     upside_opts = upside_opts.format(
         duration,
         frame_interval,
-        tempers_str,
+        T,
         randomseed,
         replica_interval,
         swap_sets[0],
         swap_sets[1],
     )
 else:
-    upside_opts = upside_opts.format(duration, frame_interval, tempers_str, randomseed)
+    upside_opts = upside_opts.format(duration, frame_interval, T, randomseed)
 
 
 if continue_sim:
