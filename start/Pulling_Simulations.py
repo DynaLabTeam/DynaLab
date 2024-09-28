@@ -123,7 +123,7 @@ kwargs = dict(
 if is_native:
     kwargs["initial_structure"] = "{}/{}.initial.npy".format(input_dir, pdb_id)
 
-config_base = "{}/{}.up".format(input_dir, sim_id)
+config_base = "{}/{}.up".format(input_dir, pdb_id)
 
 if not continue_sim:
     print("Configuring...")
