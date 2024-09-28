@@ -123,7 +123,7 @@ kwargs = dict(
 if is_native:
     kwargs["initial_structure"] = "{}/{}.initial.npy".format(input_dir, pdb_id)
 
-config_base = "{}/{}.up".format(input_dir, pdb_id)
+config_base = "{}/{}.up".format( input_dir, pdb_id)
 
 if not continue_sim:
     print("Configuring...")
@@ -189,40 +189,35 @@ if continue_sim:
     localtime = localtime.replace(":", "-")
 
     if os.path.exists(log_file):
-        shutil.move(log_file, "{}.bck_{}".format(log_file, localtime))
+        shutil.move(log_file, '{}.bck_{}'.format(log_file, localtime))
     else:
-        print("Warning: no previous log file {}!".format(log_file))
+        print('Warning: no previous log file {}!'.format(log_file))
 
-    for fn in h5_files:
-        with tb.open_file(fn, "a") as t:
-            i = 0
-            while "output_previous_%i" % i in t.root:
-                i += 1
-            new_name = "output_previous_%i" % i
-            if "output" in t.root:
-                n = t.root.output
-            else:
-                n = t.get_node("/output_previous_%i" % (i - 1))
-            t.root.input.pos[:, :, 0] = n.pos[-1, 0]
+    with tb.open_file(h5_file, 'a') as t:
+        i = 0
+        while 'output_previous_%i'%i in t.root:
+            i += 1
+        new_name = 'output_previous_%i'%i
+        if 'output' in t.root:
+            n = t.root.output
+        else:
+            n = t.get_node('/output_previous_%i'%(i-1))
 
-            if '/input/mom' in t:
-                t.remove_node(t.root.input, 'mom', recursive=True)
+        t.root.input.pos[:,:,0] = n.pos[-1,0]
+        mom = n.mom[-1,0]
+        new_mom = mom.reshape(mom.shape[0], mom.shape[1], 1)
+        
+        if '/input/mom' in t:
+            t.remove_node(t.root.input, 'mom', recursive=True)
 
-            if "tip_pos" in t.root.output:
-                tip_pos = t.root.output.tip_pos[-1]
-                # time_estimate   = t.root.output.time_estimate[-1][0]
-                if "MovingConst3D" in t.root.input.potential:
-                    n = t.root.input.potential.MovingConst3D
-                elif "MovingConst3D_pos" in t.root.input.potential:
-                    n = t.root.input.potential.MovingConst3D_pos
-                n.start_pos[:] = tip_pos
-                n._v_attrs.initialized_by_coord = 0
+        t.create_earray(t.root.input, 'mom', obj=new_mom,
+                        filters=tb.Filters(complib='zlib', 
+                                           complevel=5, fletcher32=True))
 
-            if "output" in t.root:
-                t.root.output._f_rename(new_name)
+        if 'output' in t.root:
+            t.root.output._f_rename(new_name)
 else:
-    for fn in h5_files:
-        shutil.copyfile(config_base, fn)
+    shutil.copyfile(config_base, h5_file)
 
 print("Running...")
 cmd = "{}/obj/upside {} {} | tee {}".format(upside_path, upside_opts, h5_file, log_file)
