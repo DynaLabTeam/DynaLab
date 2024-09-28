@@ -61,10 +61,10 @@ for direc in make_dirs:
 
 h5_files = []
 for j in range(n_rep):
-    h5_file = "{}/{}.run.{}.up".format(run_dir, pdb_id, j)
+    h5_file = "{}/{}.run.up".format(run_dir, sim_id)
     h5_files.append(h5_file)
 h5_files_str = " ".join(h5 for h5 in h5_files)
-log_file = "{}/{}.run.log".format(run_dir, pdb_id)
+log_file = "{}/{}.run.log".format(run_dir, sim_id)
 
 # ----------------------------------------------------------------------
 ## Check the previous trajectories if you set continue_sim = True
