@@ -59,11 +59,7 @@ for direc in make_dirs:
     if not os.path.exists(direc):
         os.makedirs(direc)
 
-h5_files = []
-for j in range(n_rep):
-    h5_file = "{}/{}.run.up".format(run_dir, sim_id)
-    h5_files.append(h5_file)
-h5_files_str = " ".join(h5 for h5 in h5_files)
+h5_file  = "{}/{}.run.up".format(run_dir, sim_id)
 log_file = "{}/{}.run.log".format(run_dir, sim_id)
 
 # ----------------------------------------------------------------------
@@ -71,17 +67,15 @@ log_file = "{}/{}.run.log".format(run_dir, sim_id)
 # ----------------------------------------------------------------------
 
 if continue_sim:
-    for h5 in h5_files:
-        exist = os.path.exists(h5)
-        if not exist:
-            print("Warning: no previous trajectory file {}!".format(h5))
-            print('set "continue_sim = False" and start a new simulation')
-            continue_sim = False
-            break
-    if continue_sim:
+    exist = os.path.exists(h5_file)
+    if not exist:
+        print('Warning: no previous trajectory file {}!'.format(h5_file))
+        print('set "continue_sim = False" and start a new simulation')
+        continue_sim = False
+    else:
         exist = os.path.exists(log_file)
         if not exist:
-            print("Warning: no previous log file {}!".format(log_file))
+            print('Warning: no previous log file {}!'.format(log_file))
 
 # ----------------------------------------------------------------------
 ## Generate Upside readable initial structure (and fasta) from PDB
