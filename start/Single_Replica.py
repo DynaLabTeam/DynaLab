@@ -49,8 +49,8 @@ for direc in make_dirs:
     if not os.path.exists(direc):
         os.makedirs(direc)
 
-h5_file  = "{}/{}.run.up".format(run_dir, pdb_id)
-log_file = "{}/{}.run.log".format(run_dir, pdb_id)
+h5_file  = "{}/{}.run.up".format(run_dir, sim_id)
+log_file = "{}/{}.run.log".format(run_dir, sim_id)
 
 #----------------------------------------------------------------------
 ## Check the previous trajectories if you set continue_sim = True 
