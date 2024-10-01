@@ -25,6 +25,8 @@ duration       = sys.argv[4]
 frame_interval = sys.argv[5]
 base_dir       = './'
 
+continue_sim     = False
+
 continue_sim     = sys.argv[6]  # when you run a new simulation, set it as "False"
                          # "True" means restarting the simulation from the last frame
                          # of the previous trajectories (they should have the same 
