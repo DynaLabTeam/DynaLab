@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export MY_PYTHON=/lib/python3.8 # change it according to your environment
+export EIGEN_HOME=/usr/include/eigen3/ #  change it according to your environment
+
+export UPSIDE_HOME=/content/upside
+
+export PATH="$MY_PYTHON/bin:$PATH"
+export PATH=$UPSIDE_HOME/obj:$PATH
+export PYTHONPATH=$UPSIDE_HOME/py:$PYTHONPATH
+
+echo $UPSIDE_HOME
