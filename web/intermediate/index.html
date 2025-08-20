@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upside Intermediate Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Upside Molecular Dynamics</h1>
+            <p class="subtitle">Parameterized Simulation Interface</p>
+        </header>
+
+        <main>
+            <!-- Card 1: Upload PDB Structure -->
+            <div class="card" id="upload-card">
+                <div class="card-header">
+                    <h2>1. Upload PDB Structure</h2>
+                </div>
+                <div class="card-content">
+                    <div class="file-upload">
+                        <input type="file" id="pdb-file" accept=".pdb" />
+                        <label for="pdb-file" class="file-label">
+                            <div class="upload-icon">📁</div>
+                            <span>Click to select PDB file</span>
+                        </label>
+                    </div>
+                    <div id="file-info" class="file-info hidden"></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Contact Details -->
+            <div class="card" id="contact-card">
+                <div class="card-header">
+                    <h2>2. Contact Details</h2>
+                </div>
+                <div class="card-content">
+                    <div class="input-group">
+                        <label for="user-name">Name</label>
+                        <input type="text" id="user-name" placeholder="Enter your name">
+                    </div>
+                    <div class="input-group">
+                        <label for="user-email">Email</label>
+                        <input type="email" id="user-email" placeholder="Enter your email">
+                        <p class="param-description">
+                            Simulation results will be made available via this email address.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Basic Simulation (const T or replica exchange) -->
+            <div class="card" id="basic-sim-card">
+                <div class="card-header">
+                    <h2>3. Basic Simulation</h2>
+                </div>
+                <div class="card-content">
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <label for="sim-mode">Simulation Mode</label>
+                            <select id="sim-mode">
+                                <option value="constant">Constant Temperature</option>
+                                <option value="replica">Replica Exchange</option>
+                            </select>
+                            <p class="param-description" id="mode-description">
+                                Standard molecular dynamics at constant temperature.
+                            </p>
+                        </div>
+
+                        <div class="config-group">
+                            <label for="duration">Duration (steps)</label>
+                            <div class="slider-container">
+                                <input type="range" id="duration" min="100" max="10000" step="100" value="1000">
+                                <span class="slider-value" id="duration-value">1000</span>
+                            </div>
+                            <p class="param-description">
+                                Number of simulation steps to run.
+                            </p>
+                        </div>
+
+                        <div class="config-group">
+                            <label for="frame-interval">Frame Interval</label>
+                            <div class="slider-container">
+                                <input type="range" id="frame-interval" min="10" max="200" step="10" value="50">
+                                <span class="slider-value" id="frame-value">50</span>
+                            </div>
+                            <p class="param-description">
+                                Steps between saved frames.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Constant Temperature Parameters -->
+                    <div id="const-temp-params" class="temp-params">
+                        <h3>Temperature Settings</h3>
+                        <div class="config-grid">
+                            <div class="config-group">
+                                <label for="temperature">Temperature</label>
+                                <div class="slider-container">
+                                    <input type="range" id="temperature" min="0.5" max="1.5" step="0.1" value="0.8">
+                                    <span class="slider-value" id="temp-value">0.8</span>
+                                </div>
+                                <p class="param-description">
+                                    Simulation temperature in reduced units.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Replica Exchange Parameters -->
+                    <div id="replica-params" class="temp-params hidden">
+                        <h3>Replica Exchange Settings</h3>
+                        <div class="config-grid">
+                            <div class="config-group">
+                                <label for="n-replicas">Number of Replicas</label>
+                                <div class="slider-container">
+                                    <input type="range" id="n-replicas" min="2" max="16" step="1" value="8">
+                                    <span class="slider-value" id="replicas-value">8</span>
+                                </div>
+                                <p class="param-description">
+                                    Number of temperature replicas.
+                                </p>
+                            </div>
+
+                            <div class="config-group">
+                                <label for="temp-low">T_low</label>
+                                <div class="slider-container">
+                                    <input type="range" id="temp-low" min="0.5" max="1.2" step="0.05" value="0.80">
+                                    <span class="slider-value" id="temp-low-value">0.80</span>
+                                </div>
+                                <p class="param-description">
+                                    Lowest temperature in replica range.
+                                </p>
+                            </div>
+
+                            <div class="config-group">
+                                <label for="temp-high">T_high</label>
+                                <div class="slider-container">
+                                    <input type="range" id="temp-high" min="0.8" max="1.5" step="0.05" value="0.94">
+                                    <span class="slider-value" id="temp-high-value">0.94</span>
+                                </div>
+                                <p class="param-description">
+                                    Highest temperature in replica range.
+                                </p>
+                            </div>
+
+                            <div class="config-group">
+                                <label for="replica-interval">Replica Interval</label>
+                                <div class="slider-container">
+                                    <input type="range" id="replica-interval" min="5" max="50" step="5" value="10">
+                                    <span class="slider-value" id="replica-interval-value">10</span>
+                                </div>
+                                <p class="param-description">
+                                    Steps between exchange attempts.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Pulling Simulation -->
+            <div class="card" id="pulling-card">
+                <div class="card-header">
+                    <h2>4. Pulling Simulation</h2>
+                    <label class="card-toggle">
+                        <input type="checkbox" id="enable-pulling">
+                        <span>Enable Pulling</span>
+                    </label>
+                </div>
+                <div class="card-content" id="pulling-content">
+                    <div class="pulling-setup">
+                        <h3>AFM Configuration</h3>
+                        <div class="afm-entries" id="afm-entries">
+                            <div class="afm-entry">
+                                <div class="afm-entry-header">
+                                    <h4>AFM Point 1</h4>
+                                </div>
+                                <div class="afm-content">
+                                    <div class="afm-row">
+                                        <div class="afm-field">
+                                            <label>Residue</label>
+                                            <input type="number" class="afm-residue" min="0" value="0" placeholder="0">
+                                        </div>
+                                        <div class="afm-field">
+                                            <label>Spring Constant</label>
+                                            <input type="number" class="afm-spring" step="0.01" value="0.05" placeholder="0.05">
+                                        </div>
+                                    </div>
+                                    <div class="afm-row">
+                                        <div class="afm-field">
+                                            <label>Tip Position (x,y,z)</label>
+                                            <div class="xyz-compact">
+                                                <input type="number" class="afm-tip-x" step="0.1" value="0" placeholder="x">
+                                                <input type="number" class="afm-tip-y" step="0.1" value="0" placeholder="y">
+                                                <input type="number" class="afm-tip-z" step="0.1" value="0" placeholder="z">
+                                            </div>
+                                        </div>
+                                        <div class="afm-field">
+                                            <label>Pulling Velocity (x,y,z)</label>
+                                            <div class="xyz-compact">
+                                                <input type="number" class="afm-vel-x" step="0.001" value="0" placeholder="vx">
+                                                <input type="number" class="afm-vel-y" step="0.001" value="0" placeholder="vy">
+                                                <input type="number" class="afm-vel-z" step="0.001" value="-0.001" placeholder="vz">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="remove-afm-btn">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-afm-btn" class="add-btn">Add AFM Point</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Membrane System -->
+            <div class="card" id="membrane-card">
+                <div class="card-header">
+                    <h2>5. Membrane System</h2>
+                    <label class="card-toggle">
+                        <input type="checkbox" id="enable-membrane">
+                        <span>Enable Membrane</span>
+                    </label>
+                </div>
+                <div class="card-content" id="membrane-content">
+                    <div class="config-grid">
+                        <div class="config-group">
+                            <label for="membrane-coord-system">Coordinate System</label>
+                            <select id="membrane-coord-system">
+                                <option value="cartesian">Cartesian (z-coordinate)</option>
+                                <option value="spherical">Spherical (h-coordinate)</option>
+                            </select>
+                            <p class="param-description">
+                                Choose coordinate system for membrane boundaries.
+                            </p>
+                        </div>
+
+                        <div class="config-group">
+                            <label for="membrane-inner">Inner Boundary</label>
+                            <div class="slider-container">
+                                <input type="range" id="membrane-inner" min="-25" max="0" step="1" value="-16">
+                                <span class="slider-value" id="inner-value">-16</span>
+                            </div>
+                            <p class="param-description">
+                                Inner membrane boundary (Å).
+                            </p>
+                        </div>
+
+                        <div class="config-group">
+                            <label for="membrane-outer">Outer Boundary</label>
+                            <div class="slider-container">
+                                <input type="range" id="membrane-outer" min="0" max="25" step="1" value="16">
+                                <span class="slider-value" id="outer-value">16</span>
+                            </div>
+                            <p class="param-description">
+                                Outer membrane boundary (Å).
+                            </p>
+                        </div>
+
+                        <div class="config-group">
+                            <label>Membrane Options</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="disable-recentering">
+                                    <span>Disable recentering</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="disable-z-recentering">
+                                    <span>Disable Z-recentering</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Restraint Groups/Restraints -->
+            <div class="card" id="restraints-card">
+                <div class="card-header">
+                    <h2>6. Restraint Groups/Restraints</h2>
+                    <label class="card-toggle">
+                        <input type="checkbox" id="enable-restraints">
+                        <span>Enable Restraints</span>
+                    </label>
+                </div>
+                <div class="card-content" id="restraints-content">
+                    <div class="restraint-types">
+                        <div class="restraint-section">
+                            <h3>Fixed Wall Restraints</h3>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-wall-const">
+                                <span>Enable Fixed Wall</span>
+                            </label>
+                            <div id="wall-const-entries" class="restraint-text-area hidden">
+                                <label for="wall-const-text">Fixed Wall Data (residue radius spring_const wall_type x0 y0 z0)</label>
+                                <textarea id="wall-const-text" rows="4" placeholder="0 5.0 4.0 1 0 0 0&#10;5 10.0 4.0 1 0 0 8"></textarea>
+                                <p class="param-description">Format: residue radius spring_const wall_type x0 y0 z0 (one per line)</p>
+                            </div>
+                        </div>
+
+                        <div class="restraint-section">
+                            <h3>Pair Wall Restraints</h3>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-wall-pair">
+                                <span>Enable Pair Wall</span>
+                            </label>
+                            <div id="wall-pair-entries" class="restraint-text-area hidden">
+                                <label for="wall-pair-text">Pair Wall Data (residue1 residue2 radius spring_const)</label>
+                                <textarea id="wall-pair-text" rows="4" placeholder="4 26 8.0 4.0"></textarea>
+                                <p class="param-description">Format: residue1 residue2 radius spring_const (one per line)</p>
+                            </div>
+                        </div>
+
+                        <div class="restraint-section">
+                            <h3>Fixed Spring Restraints</h3>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-spring-const">
+                                <span>Enable Fixed Spring</span>
+                            </label>
+                            <div id="spring-const-entries" class="restraint-text-area hidden">
+                                <label for="spring-const-text">Fixed Spring Data (residue spring_const x0 y0 z0)</label>
+                                <textarea id="spring-const-text" rows="4" placeholder="0 4.0 0 0 0"></textarea>
+                                <p class="param-description">Format: residue spring_const x0 y0 z0 (one per line)</p>
+                            </div>
+                        </div>
+
+                        <div class="restraint-section">
+                            <h3>Pair Spring Restraints</h3>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-spring-pair">
+                                <span>Enable Pair Spring</span>
+                            </label>
+                            <div id="spring-pair-entries" class="restraint-text-area hidden">
+                                <label for="spring-pair-text">Pair Spring Data (residue1 residue2 radius spring_const)</label>
+                                <textarea id="spring-pair-text" rows="4" placeholder="4 26 8.0 4.0"></textarea>
+                                <p class="param-description">Format: residue1 residue2 radius spring_const (one per line)</p>
+                            </div>
+                        </div>
+
+                        <div class="restraint-section">
+                            <h3>Nail Restraints</h3>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enable-nail">
+                                <span>Enable Nail Restraint</span>
+                            </label>
+                            <div id="nail-entries" class="restraint-text-area hidden">
+                                <label for="nail-text">Nail Data (residue spring_const)</label>
+                                <textarea id="nail-text" rows="4" placeholder="0 4.0"></textarea>
+                                <p class="param-description">Format: residue spring_const (one per line)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Run Section -->
+            <div class="card" id="run-card">
+                <div class="card-header">
+                    <h2>7. Run Simulation</h2>
+                </div>
+                <div class="card-content">
+                    <div class="run-preview">
+                        <h3>Configuration Summary</h3>
+                        <div id="config-summary" class="config-summary">
+                            <!-- Dynamic content -->
+                        </div>
+                    </div>
+                    <button id="run-btn" class="run-button" disabled>
+                        <span class="btn-text">Run Simulation</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="progress-section" class="progress-section hidden">
+                <h2>Progress</h2>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div id="progress-text" class="progress-text">Initializing...</div>
+                <div class="progress-details">
+                    <div class="progress-stats">
+                        <span id="current-step">Step: 0</span>
+                        <span id="current-energy">Energy: -- kT</span>
+                        <span id="elapsed-time">Time: 0s</span>
+                    </div>
+                </div>
+                <div id="log-output" class="log-output"></div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="results-section hidden">
+                <h2>Results</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Trajectory</h3>
+                        <p>Final trajectory: <code id="traj-filename">protein.run.up</code></p>
+                        <button class="download-btn">Download</button>
+                    </div>
+                    <div class="result-card">
+                        <h3>Analysis Plot</h3>
+                        <div id="analysis-chart" class="chart-container">
+                            <canvas id="result-chart" width="300" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="result-card">
+                        <h3>Summary</h3>
+                        <div id="result-summary" class="result-summary">
+                            <!-- Dynamic content -->
+                        </div>
+                        <button class="download-btn">Download Report</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

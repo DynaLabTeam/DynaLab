@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upside Advanced Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Upside Molecular Dynamics</h1>
+            <p class="subtitle">Advanced Configuration Editor</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2>1. Upload Protein Structure</h2>
+                <div class="file-upload">
+                    <input type="file" id="pdb-file" accept=".pdb" />
+                    <label for="pdb-file" class="file-label">
+                        <div class="upload-icon">📁</div>
+                        <span>Click to select PDB file</span>
+                    </label>
+                </div>
+                <div id="file-info" class="file-info hidden"></div>
+            </div>
+
+            <div class="config-section">
+                <h2>2. Configuration Editor</h2>
+                <div class="editor-controls">
+                    <div class="control-group">
+                        <label for="config-format">Format:</label>
+                        <select id="config-format">
+                            <option value="python">Python Script</option>
+                            <option value="json">JSON Config</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="preset-config">Load Preset:</label>
+                        <select id="preset-config">
+                            <option value="custom">Custom Configuration</option>
+                            <option value="basic">Basic MD Simulation</option>
+                            <option value="pulling">Pulling Simulation</option>
+                            <option value="hdx">HDX Analysis</option>
+                            <option value="membrane">Membrane Simulation</option>
+                            <option value="replica">Replica Exchange</option>
+                        </select>
+                    </div>
+                    <div class="control-buttons">
+                        <button id="validate-btn" class="control-btn">Validate</button>
+                        <button id="format-btn" class="control-btn">Format</button>
+                        <button id="reset-btn" class="control-btn secondary">Reset</button>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <span class="editor-title" id="editor-title">config.py</span>
+                        <div class="editor-status">
+                            <span id="validation-status" class="status-indicator"></span>
+                            <span id="line-count" class="line-count">Lines: 1</span>
+                        </div>
+                    </div>
+                    <textarea id="config-editor" class="config-editor" spellcheck="false"></textarea>
+                    <div id="editor-errors" class="editor-errors hidden"></div>
+                </div>
+
+                <div class="config-help">
+                    <h3>Configuration Help</h3>
+                    <div class="help-tabs">
+                        <button class="help-tab active" data-tab="parameters">Parameters</button>
+                        <button class="help-tab" data-tab="examples">Examples</button>
+                        <button class="help-tab" data-tab="reference">Reference</button>
+                    </div>
+                    <div class="help-content">
+                        <div id="help-parameters" class="help-panel active">
+                            <h4>Common Parameters</h4>
+                            <div class="param-list">
+                                <div class="param-item">
+                                    <code>temperature</code> - Simulation temperature (0.6-1.2)
+                                </div>
+                                <div class="param-item">
+                                    <code>duration</code> - Number of simulation steps
+                                </div>
+                                <div class="param-item">
+                                    <code>frame_interval</code> - Steps between saved frames
+                                </div>
+                                <div class="param-item">
+                                    <code>ff</code> - Force field version ('ff_2.0', 'ff_2.1')
+                                </div>
+                                <div class="param-item">
+                                    <code>randomseed</code> - Random number seed
+                                </div>
+                            </div>
+                        </div>
+                        <div id="help-examples" class="help-panel">
+                            <h4>Example Configurations</h4>
+                            <div class="example-list">
+                                <div class="example-item" data-config="basic">
+                                    <strong>Basic MD:</strong> Standard molecular dynamics simulation
+                                </div>
+                                <div class="example-item" data-config="pulling">
+                                    <strong>Pulling:</strong> AFM-style single molecule pulling
+                                </div>
+                                <div class="example-item" data-config="hdx">
+                                    <strong>HDX:</strong> Hydrogen-deuterium exchange analysis
+                                </div>
+                            </div>
+                        </div>
+                        <div id="help-reference" class="help-panel">
+                            <h4>Configuration Reference</h4>
+                            <p>For detailed parameter documentation, see:</p>
+                            <ul>
+                                <li><code>upside_config()</code> - Basic configuration options</li>
+                                <li><code>advanced_config()</code> - Advanced features</li>
+                                <li><code>run_upside</code> module - Runtime parameters</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="run-section">
+                <h2>3. Run Simulation</h2>
+                <div class="run-preview">
+                    <h3>Configuration Summary</h3>
+                    <div id="config-preview" class="config-preview">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+                <button id="run-btn" class="run-button" disabled>
+                    <span class="btn-text">Run Simulation</span>
+                    <div class="spinner hidden"></div>
+                </button>
+            </div>
+
+            <div id="progress-section" class="progress-section hidden">
+                <h2>4. Progress</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div id="progress-text" class="progress-text">Initializing...</div>
+                </div>
+                
+                <div class="progress-panels">
+                    <div class="progress-panel">
+                        <h4>Runtime Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Current Step:</span>
+                                <span id="current-step" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Energy:</span>
+                                <span id="current-energy" class="stat-value">-- kT</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Temperature:</span>
+                                <span id="current-temp" class="stat-value">-- K</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Elapsed:</span>
+                                <span id="elapsed-time" class="stat-value">0s</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-panel">
+                        <h4>Console Output</h4>
+                        <div id="log-output" class="log-output"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-section" class="results-section hidden">
+                <h2>5. Results & Analysis</h2>
+                <div class="results-layout">
+                    <div class="results-main">
+                        <div class="result-card">
+                            <h3>Trajectory Analysis</h3>
+                            <div id="analysis-chart" class="chart-container">
+                                <canvas id="result-chart" width="400" height="250"></canvas>
+                            </div>
+                            <div class="chart-controls">
+                                <select id="chart-type">
+                                    <option value="energy">Energy vs Time</option>
+                                    <option value="rmsd">RMSD vs Time</option>
+                                    <option value="force">Force vs Extension</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="results-sidebar">
+                        <div class="result-card">
+                            <h3>Output Files</h3>
+                            <div class="file-list">
+                                <div class="file-item">
+                                    <span class="file-icon">📄</span>
+                                    <div class="file-details">
+                                        <div class="file-name" id="traj-filename">protein.run.up</div>
+                                        <div class="file-size">2.4 MB</div>
+                                    </div>
+                                    <button class="download-btn">↓</button>
+                                </div>
+                                <div class="file-item">
+                                    <span class="file-icon">📋</span>
+                                    <div class="file-details">
+                                        <div class="file-name">simulation.log</div>
+                                        <div class="file-size">156 KB</div>
+                                    </div>
+                                    <button class="download-btn">↓</button>
+                                </div>
+                                <div class="file-item">
+                                    <span class="file-icon">📊</span>
+                                    <div class="file-details">
+                                        <div class="file-name">analysis.csv</div>
+                                        <div class="file-size">45 KB</div>
+                                    </div>
+                                    <button class="download-btn">↓</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-card">
+                            <h3>Summary</h3>
+                            <div id="result-summary" class="result-summary">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
