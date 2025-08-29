@@ -21,7 +21,7 @@ pdb_id           = '6BF8'
 pdb_dir          = './pdb'
 sim_id           = 'REMD'
 is_native        = True
-ff               = 'ff_2.1'
+ff               = 'ff_2.1' # ff = force field
 
 duration         = 10000
 frame_interval   = 100
