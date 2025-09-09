@@ -17,7 +17,7 @@ import run_upside as ru
 ## General Settings and Path
 #----------------------------------------------------------------------
 
-pdb_id           = '6BF8'
+pdb_id           = '1ubq'
 pdb_dir          = './pdb'
 sim_id           = 'REMD'
 is_native        = True
